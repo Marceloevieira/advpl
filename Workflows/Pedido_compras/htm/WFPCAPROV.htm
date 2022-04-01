@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Language" content="pt-br">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <TITLE>..:: WorkFlow Pedido de Compras ::..</TITLE>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style type="text/css">
+        #input_total {
+            background-color: #ffff00;
+            color: #FFFFFF;
+        }
+        
+        #input_aprovar {
+            background-color: #008000;
+            color: #FFFFFF;
+        }
+        
+        #input_bloquear {
+            background-color: #ff0000;
+            color: #FFFFFF;
+        }
+        
+        .bd-padrao {
+            border: 1px solid #006699;
+        }
+        
+        .bg-padrao {
+            background-color: #006699;
+        }
+        
+        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+            table thead {
+                display: none;
+            }
+            table tr {
+                margin-bottom: 10px;
+                display: block;
+                border-bottom: 2px solid #ddd;
+            }
+            table td {
+                display: block;
+                text-align: right;
+                font-size: 13px;
+                border-bottom: 1px dotted #ccc;
+            }
+            table td:last-child {
+                border-bottom: 0;
+            }
+            table td:before {
+                content: attr(data-label);
+                float: left;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+        }
+    </style>
+
+    <script type="text/javascript">
+        function JFSUBMIT(cAprovar) {
+
+            var oFrm = document.forms[0];
+            var oAprovar = document.getElementById('WAPROVA');
+
+            oAprovar.value = cAprovar;
+            oFrm.submit();
+
+        }
+    </script>
+</head>
+
+<body>
+    <FORM action="mailto:%WFMailTo%" method="POST" name="FrontPage_Form1">
+	        <input type=hidden name="WCHAVE" value="!WCHAVE!" >
+			<input type=hidden name="WAPROVA" id="WAPROVA" value="!WAPROVA!" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 mt-2">
+                    <div class="card p-1 bd-padrao">
+
+                        <div class="row no-gutters">
+                            <div class="col-md-2 text-center">
+                                <img src="https://i.imgur.com/JiAa84l.png" class="img-fluid" alt="%NOMEEMP%" title="%NOMEEMP%">
+                            </div>
+                            <div class="col-md-10 bg-padrao" style="display: flex;    flex-grow: 1;    align-items: center;    justify-content: center; ">
+                                <div class="card-body">
+
+                                    <p class="text-white h1 text-center">Aprova&#xE7;&#xE3;o Pedido de Compras</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-4">
+                    <div class="card">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Dados do Pedido</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">N&#250;mero</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder ">!WFPCNUM!</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Comprador</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFCOMPRADOR!</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Data Emiss&atilde;o</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFEMISSAO!</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Fornecedor</p>
+                                </div>
+                                <div class="col-lg-4 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFFORNECE!</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Cond. Pagto</p>
+                                </div>
+                                <div class="col-lg-4 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFCONDPAG!</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Filial p/ Entrega</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFFILENTREG!</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Moeda</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFMOEDA!</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2">Taxa</p>
+                                </div>
+                                <div class="col-lg-2 border">
+                                    <p class="text-left m-2 font-weight-bolder">!WFTAXA!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 mt-4">
+                    <div class="card">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Itens do Pedido</p>
+                        </div>
+                        <div class="card-body">
+                            <table class="table-hover table   ">
+                                <thead>
+                                    <tr>
+                                        <th class="align-middle text-left">Item do PC</th>
+                                        <th class="align-middle text-left">Produto</th>
+                                        <th class="align-middle text-left">Descri&#231;&#227;o</th>
+                                        <th class="align-middle text-right">Saldo Atual</th>
+                                        <th class="align-middle text-center">Unid Medida</th>
+                                        <th class="align-middle text-center">Armazem</th>
+                                        <th class="align-middle text-right">Quantidade</th>
+                                        <th class="align-middle text-right">Pre&#231;o Unit&#225;rio</th>
+                                        <th class="align-middle text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Item do PC" class="align-middle ">!IT.WFITEM!</td>
+                                        <td data-label="Produto" class="align-middle ">!IT.WFPRODUTO!</td>
+                                        <td data-label="Descri&#231;&#227;o" class="align-middle ">!IT.WFDESCRIC!</td>
+                                        <td data-label="Saldo Atual" class="align-middle ">!IT.WFSLDOATU!</td>
+                                        <td data-label="Unid Medida" class="align-middle ">!IT.WFUNIDMED!</td>
+                                        <td data-label="Armazem" class="align-middle ">!IT.WFARMAZEM!</td>
+                                        <td data-label="Quantidade" class="align-middle ">!IT.WFQUANTID!</td>
+                                        <td data-label="Pre&#231;o Unit&#225;rio" class="align-middle ">!IT.WFPRCUNID!</td>
+                                        <td data-label="Total" class="align-middle ">!IT.WFTOTIT!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mt-4 mb-4">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Aprovar</p>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-around">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn-lg" onclick="JFSUBMIT('S')">&nbsp&nbsp&nbsp SIM &nbsp&nbsp&nbsp </button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger btn-lg" onclick="JFSUBMIT('N')">&nbsp&nbsp&nbsp N&#195;O &nbsp&nbsp&nbsp </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </FORM>
+</body>
+
+</html>
