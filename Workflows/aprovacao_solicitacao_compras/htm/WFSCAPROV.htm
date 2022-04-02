@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Language" content="pt-br">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <TITLE>..:: WorkFlow Aprova&#xE7;&#xE3;o Solicita&#xE7;&#xE3;o de Compras ::..</TITLE>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style type="text/css">
+        .bd-padrao {
+            border: 1px solid #006699;
+        }
+        
+        .bg-padrao {
+            background-color: #006699;
+        }
+		       @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+            table thead {
+                display: none;
+            }
+            table tr {
+                margin-bottom: 10px;
+                display: block;
+                border-bottom: 2px solid #ddd;
+            }
+            table td {
+                display: block;
+                text-align: right;
+                font-size: 13px;
+                border-bottom: 1px dotted #ccc;
+            }
+            table td:last-child {
+                border-bottom: 0;
+            }
+            table td:before {
+                content: attr(data-label);
+                float: left;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+        }
+		
+    </style>
+    <script type="text/javascript">
+        function JFSUBMIT(cAprovar) {
+
+            var oFrm = document.forms[0];
+            var oAprovar = document.getElementById('WAPROVA');
+
+            oAprovar.value = cAprovar;
+            oFrm.submit();
+
+        }
+    </script>
+</head>
+
+<body>
+    <FORM action="mailto:%WFMailTo%" method="POST" name="FrontPage_Form1">
+	        <input type=hidden name="WCHAVE" value="!WCHAVE!" >
+			<input type=hidden name="WAPROVA" id="WAPROVA" value="!WAPROVA!" > 
+       <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 mt-2">
+                    <div class="card p-1 bd-padrao">
+
+                        <div class="row no-gutters">
+                            <div class="col-md-2 text-center">
+                                <img src="%LOGOEMP%" class="img-fluid" alt="%NOMEEMP%" title="%NOMEEMP%">
+                            </div>
+                            <div class="col-md-10 bg-padrao" style="display: flex;    flex-grow: 1;    align-items: center;    justify-content: center; ">
+                                <div class="card-body">
+
+                                    <p class="text-white h1 text-center">Aprova&#xE7;&#xE3;o Solicita&#xE7;&#xE3;o de Compras</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-4">
+                    <div class="card">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Dados da Solicita&#xE7;&#xE3;o</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">N&#250;mero</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder ">!WSCNUM!</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Solicitante</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder">!WSSOLICIT!</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Data Emiss&atilde;o</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder">!WSEMISSAO!</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Unid. Requis.</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder ">!WUNIDREQ!</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Cod. Comprador</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder">!WCODCOMP!</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Filial de Entrega</p>
+                                </div>
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2 font-weight-bolder">!WFILENT!</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 ">
+                                    <p class="text-left m-2">Centro de Custo</p>
+                                </div>
+                                <div class="col-lg-10 ">
+                                    <p class="text-left m-2 font-weight-bolder ">!WSCCC!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 mt-4">
+                    <div class="card">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Itens da Solicita&#xE7;&#xE3;o</p>
+                        </div>
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table class="table table-hover   ">
+							<thead>
+                                <tr>
+                                    <th class="align-middle text-left text-nowrap">Item da SC</th>
+                                    <th class="align-middle text-left text-nowrap">Produto</th>
+                                    <th class="align-middle text-left text-nowrap">Descri&#231;&#227;o</th>
+                                    <th class="align-middle text-right text-nowrap">Saldo Atual</th>
+                                    <th class="align-middle text-center text-nowrap">Ponto Pedido</th>
+                                    <th class="align-middle text-center text-nowrap">Saldo da SC</th>
+                                    <th class="align-middle text-right text-nowrap">Unid Medida</th>
+                                    <th class="align-middle text-right text-nowrap">Armazem</th>
+                                    <th class="align-middle text-right text-nowrap">Qtd.Embalag.</th>
+                                    <th class="align-middle text-right text-nowrap">Ult. Preco</th>
+                                    <th class="align-middle text-right text-nowrap">Lead Time</th>
+                                    <th class="align-middle text-right text-nowrap">Data Necessidade</th>
+                                    <th class="align-middle text-right text-nowrap">Data para Comprar</th>
+                                </tr>
+								</thead>
+								<tbody>
+                                <tr>
+                                    <td data-label="Item da SC" class="align-middle  text-nowrap">!IT.WITEM!</td>
+                                    <td data-label="Produto" class="align-middle  text-nowrap">!IT.WPRODUTO!</td>
+                                    <td data-label="Descri&#231;&#227;o" class="align-middle  text-nowrap">!IT.WDESCPROD!</td>
+                                    <td data-label="Saldo Atual" class="align-middle  text-nowrap">!IT.WQATU!</td>
+                                    <td data-label="Ponto Pedido" class="align-middle  text-nowrap">!IT.WEMIN!</td>
+                                    <td data-label="Saldo da SC" class="align-middle  text-nowrap">!IT.WSALDOSC1!</td>
+                                    <td data-label="Unid Medida" class="align-middle  text-nowrap">!IT.WUM!</td>
+                                    <td data-label="Armazem" class="align-middle  text-nowrap">!IT.WLOCAL!</td>
+                                    <td data-label="Qtd.Embalag." class="align-middle  text-nowrap">!IT.WQE!</td>
+                                    <td data-label="Ult. Preco" class="align-middle  text-nowrap">!IT.WUPRC!</td>
+                                    <td data-label="Lead Time" class="align-middle  text-nowrap">!IT.WLEADTIME!</td>
+                                    <td data-label="Data Necessidade" class="align-middle  text-nowrap">!IT.WDTNECESS!</td>
+                                    <td data-label="Data para Comprar" class="align-middle  text-nowrap">!IT.WDTFORCOMP!</td>
+                                </tr>
+								</tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mt-4">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Observações</p>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-around">
+                                <div class="form-group">
+                                    <textarea class="form-control" id=Wobs rows=3 cols=50 name=Wobs readonly style="resize:none;">%Wobs%</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mt-4 mb-4">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Aprovar</p>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-around">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn-lg" onclick="JFSUBMIT('S')">&nbsp&nbsp&nbsp SIM &nbsp&nbsp&nbsp </button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger btn-lg" onclick="JFSUBMIT('N')">&nbsp&nbsp&nbsp N&#195;O &nbsp&nbsp&nbsp </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </FORM>
+</body>
+
+</html>
