@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Language" content="pt-br">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <TITLE>..:: WorkFlow de Cota&#xE7;&#xE3;o ::..</TITLE>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style type="text/css">
+        .ipt-number {
+            width: 120px;
+            text-align: right;
+        }
+        
+        .ipt-obs {
+            width: 200px;
+        }
+        
+        .bd-padrao {
+            border: 1px solid #006699;
+        }
+        
+        .bg-padrao {
+            background-color: #006699;
+        }
+		
+		        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+            table thead {
+                display: none;
+            }
+            table tr {
+                margin-bottom: 10px;
+                display: block;
+                border-bottom: 2px solid #ddd;
+            }
+            table td {
+                display: block;
+                text-align: right;
+                font-size: 13px;
+                border-bottom: 1px dotted #ccc;
+            }
+            table td:last-child {
+                border-bottom: 0;
+            }
+            table td:before {
+                content: attr(data-label);
+                float: left;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+			
+			.ipt-number {
+            width: 100%;
+            text-align: right;
+			}
+			.ipt-obs {
+            width: 100%;
+			}
+        }
+    </style>
+
+    <script type="text/javascript">
+        //----------------------------------------------
+        // Calcula o sub total
+        //----------------------------------------------
+        function calcSubTotal() {
+
+            var i = 1;
+            var subtotal = 0;
+            var desconto = 0;
+            var icmsst = 0;
+            var ipi = 0;
+            var objectVlrTot = document.all["IT.VLRTOT." + i];
+            var objectDescon = document.all["IT.DESCON." + i];
+            var objecticmsst = document.all["IT.VLRICMST." + i];
+            var objectipi = document.all["IT.VLRIPI." + i];
+
+            while (objectVlrTot != null) {
+                subtotal += commaToNumber(objectVlrTot.value);
+                desconto += commaToNumber(objectDescon.value);
+                icmsst += commaToNumber(objecticmsst.value);
+                ipi += commaToNumber(objectipi.value);
+                ++i
+                objectVlrTot = document.all["IT.VLRTOT." + (i)];
+                objectDescon = document.all["IT.DESCON." + (i)];
+                objecticmsst = document.all["IT.VLRICMST." + (i)];
+                objectipi = document.all["IT.VLRIPI." + (i)];
+            }
+
+            document.all["SUBTOT"].value = subtotal.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.all["VALDESC"].value = desconto.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.all["TOTICMST"].value = icmsst.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.all["TOTIPI"].value = ipi.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+        }
+
+        //----------------------------------------------
+        // Calcula o total do pedido
+        //----------------------------------------------	  
+        function calcTotalPedido() {
+
+            var total = 0;
+            var subtotal = commaToNumber(document.all["SUBTOT"].value);
+            var descontos = commaToNumber(document.all["VALDESC"].value);
+            var icmsst = commaToNumber(document.all["TOTICMST"].value);
+            var ipi = commaToNumber(document.all["TOTIPI"].value);
+            var frete = commaToNumber(document.all["VALFRETE"].value);
+
+            total = subtotal - descontos + icmsst + ipi + (document.all["FRETE"].value.substring(0, 1) != 'F' ? frete : 0);
+
+            document.all["TOTPED"].value = total.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.all["VALFRETE"].value = frete.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        //----------------------------------------------
+        // Converte caraceter para numerico
+        //----------------------------------------------	 	  
+        function commaToNumber(cNumber) {
+            return parseFloat(cNumber.replace(".", "").replace(",", "."));
+        }
+
+        //----------------------------------------------
+        // Calcula geral
+        //----------------------------------------------	  
+        function solveUnitario(oField) {
+
+            var nPos = oField.name.lastIndexOf('.');
+            var cFieldQuant = "IT.QUANT." + oField.name.substr(nPos + 1, 3);
+            var cFieldPreco = "IT.VLRUNI." + oField.name.substr(nPos + 1, 3);
+            var cFieldValor = "IT.VLRTOT." + oField.name.substr(nPos + 1, 3);
+            var cFieldDescon = "IT.DESCON." + oField.name.substr(nPos + 1, 3);
+            var cFieldVlrIcmSt = "IT.VLRICMST." + oField.name.substr(nPos + 1, 3);
+            var cFieldVlrIpi = "IT.VLRIPI." + oField.name.substr(nPos + 1, 3);
+
+            var nTotItem = document.getElementsByClassName("ITEM").length;
+            var nQuant = commaToNumber(document.all[cFieldQuant].value);
+            var nPreco = commaToNumber(document.all[cFieldPreco].value);
+            var nValor = nQuant * nPreco;
+            var nDescont = commaToNumber(document.all[cFieldDescon].value);
+            var nVlrIcmsSt = commaToNumber(document.all[cFieldVlrIcmSt].value);
+            var nVlrIpi = commaToNumber(document.all[cFieldVlrIpi].value);
+            var nVlrFret = commaToNumber(document.all["VALFRETE"].value);
+
+            var cPreco = nPreco.toLocaleString('pt-br', {
+                minimumFractionDigits: 6,
+                maximumFractionDigits: 6
+            });
+            var cValor = nValor.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            var cDescon = nDescont.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            var cVlrIcms = nVlrIcmsSt.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            var cVlrIpi = nVlrIpi.toLocaleString('pt-br', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            document.all[cFieldPreco].value = cPreco;
+            document.all[cFieldValor].value = cValor;
+            document.all[cFieldDescon].value = cDescon;
+            document.all[cFieldVlrIcmSt].value = cVlrIcms;
+            document.all[cFieldVlrIpi].value = cVlrIpi;
+
+            calcSubTotal();
+            calcTotalPedido();
+        }
+
+        function RecalcVlrs() {
+
+            var nTotItem = document.getElementsByClassName("ITEM").length;
+
+            for (var i = 1; i <= nTotItem; i++) {
+
+                var objectVlrTot = document.all["IT.VLRTOT." + i];
+                solveUnitario(objectVlrTot);
+            }
+        }
+
+        function CalcFrete(oField) {
+
+            var oFrete = document.all["VALFRETE"];
+            var frete = commaToNumber(oFrete.value);
+
+            oFrete.value = (oField.value.substring(0, 1) != 'F' ? frete : 0);
+            RecalcVlrs();
+        }
+
+        function EnviaFormulario(event) {
+
+            if (event.keyCode == 13) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <FORM action="mailto:%WFMailTo%" method="POST" name="FrontPage_Form1">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 mt-2">
+                    <div class="card p-1 bd-padrao">
+
+                        <div class="row no-gutters">
+                            <div class="col-md-2 text-center">
+                                <img src="%LOGOEMP%" class="img-fluid" alt="%NOMEEMP%" title="%NOMEEMP%">
+                            </div>
+                            <div class="col-md-10 bg-padrao" style="display: flex;    flex-grow: 1;    align-items: center;    justify-content: center; ">
+                                <div class="card-body">
+
+                                    <p class="text-white h1 text-center">Cota&#xE7;&#xE3;o de Compras</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-4">
+                    <div class="card-group">
+                        <div class="card">
+                            <div class="card-header text-center bg-padrao">
+                                <p class="card-text text-white h5">Dados do Fornecedor</p>
+                            </div>
+                            <div class="card-body">
+
+                                <p class="text-left mt-2  font-weight-bolder">PREZADOS SENHORES.
+                                    </BR>
+                                    </BR> !WFFORNECE!
+                                    </BR> !WFENDFORN!
+                                    </BR> !WFBAIRROFR!
+                                    </BR>
+                                    </BR>Fone&nbsp;:&nbsp; !WFFONEFOR!
+                                    </BR>Fax&nbsp;:&nbsp; !WFFAXFORN!
+                                    </BR>
+                                    </BR> Solicitamos de V Sas. cota&#xE7;&#xE3;o de pre&#xE7;os para os produtos
+                                    </BR> discriminados conforme os padr&#xF5;es abaixo estabelecidos:</p>
+
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header text-center bg-padrao">
+                                <p class="card-text text-white h5">Dados da Cota&#xE7;&#xE3;o</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-3 mt-2">
+                                        <p class="text-left font-weight-bolder">Cota&#xE7;&#xE3;o N. :</p>
+                                    </div>
+                                    <div class="col-lg-3 mt-2">
+                                        <p class="text-left  font-weight-bolder ">!WFTNUMCOT!</p>
+                                    </div>
+                                    <div class="col-lg-3 mt-2">
+                                        <p class="text-left font-weight-bolder">Vencimento :</p>
+                                    </div>
+                                    <div class="col-lg-3 mt-2">
+                                        <p class="text-left  font-weight-bolder">!WFVENCCOT!</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-lg-12 ">
+                                        <p class="text-left mt-2 font-weight-bolder">Por favor queira referenciar este n&#xFA;mero para quaisquer troca de
+                                            </BR>informa&#xE7;&#xF5;es referentes a esta cota&#xE7;&#xE3;o.
+                                            </BR>!WFNOMECOM!
+                                            </BR> !WFENDEMP!
+                                            </BR> !WFBAIREMP!
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <p class="text-left mt-2 font-weight-bolder">Fone :</p>
+                                    </div>
+                                    <div class="col-lg-4 ">
+                                        <p class="text-left mt-2 font-weight-bolder ">!WFFONEEMP!</p>
+                                    </div>
+                                    <div class="col-lg-2 ">
+                                        <p class="text-left mt-2 font-weight-bolder">Fax :</p>
+                                    </div>
+                                    <div class="col-lg-4 ">
+                                        <p class="text-left mt-2 font-weight-bolder">!WFFAXEMP!</p>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <p class="text-left mt-2 font-weight-bolder">E-mail :</p>
+                                    </div>
+                                    <div class="col-lg-10 ">
+                                        <p class="text-left mt-2 font-weight-bolder ">!WFEMAILEMP!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 mt-4">
+                    <div class="card">
+                        <div class="card-header text-center bg-padrao">
+                            <p class="card-text text-white h5">Itens da Cota&#xE7;&#xE3;o</p>
+                        </div>
+                        <div class="card-body">
+							                                               <div class="row">
+                                                    <div class="col-lg-12" style="overflow-x:auto;">
+                            <table class="table table-hover  ">
+							<thead>
+                                <tr>
+                                    <th class="align-middle text-left text-nowrap">It.</th>
+                                    <th class="align-middle text-left text-nowrap">Codigo</th>
+                                    <th class="align-middle text-left text-nowrap">Descri&#231;&#227;o</th>
+                                    <th class="align-middle text-right text-nowrap">Quantidade</th>
+                                    <th class="align-middle text-center text-nowrap">UN</th>
+                                    <th class="align-middle text-center text-nowrap">Val. Unitario(R$)</th>
+                                    <th class="align-middle text-right text-nowrap">Val. Total(R$)</th>
+                                    <th class="align-middle text-right text-nowrap">Desconto</th>
+                                    <th class="align-middle text-right text-nowrap">Icms St(R$)</th>
+                                    <th class="align-middle text-right text-nowrap">Ipi(R$)</th>
+                                    <th class="align-middle text-right text-nowrap">Prazo Entrega</br>(dias)</th>
+                                    <th class="align-middle text-right text-nowrap">Necessidade</th>
+                                    <th class="align-middle text-right text-nowrap">Marca Produto</th>
+                                    <th class="align-middle text-right text-nowrap">Observa&#231;&#245;es</th>
+                                    <th class="align-middle text-right text-nowrap">Observa&#231;&#245;es Fornecedor</th>
+                                </tr>
+							</thead>
+							<tbody>
+                                <tr>
+                                    <td data-label="It." class="align-middle  text-nowrap">!IT.ITEM!</td>
+                                    <td data-label="Codigo" class="align-middle  text-nowrap">!IT.CODIGO!</td>
+                                    <td data-label="Descri&#231;&#227;o" class="align-middle  text-nowrap">!IT.DESCRI!</td>
+                                    <td data-label="Quantidade" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.QUANT" value="%IT.QUANT%" onchange="solveUnitario(this);" ID="IT.QUANT" onkeypress="return EnviaFormulario(event);" readonly>
+                                    </td>
+                                    <td data-label="UN" class="align-middle  text-nowrap">!IT.UN!</td>
+                                    <td data-label="Val. Unitario(R$)" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.VLRUNI" value="%IT.VLRUNI%" onchange="solveUnitario(this);" ID="IT.VLRUNI" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Val. Total(R$)" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.VLRTOT" value="%IT.VLRTOT%" onchange="solveUnitario(this);" ID="IT.VLRTOT" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Desconto" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.DESCON" value="%IT.DESCON%" onchange="solveUnitario(this);" ID="IT.DESCON" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Icms St(R$)" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.VLRICMST" value="%IT.VLRICMST%" onchange="solveUnitario(this);" ID="IT.VLRICMST" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Ipi(R$)" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.VLRIPI" value="%IT.VLRIPI%" onchange="solveUnitario(this);" ID="IT.VLRIPI" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Prazo Entrega (dias)" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.PRZENTR" value="%IT.PRZENTR%" ID="IT.PRZENTR" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Necessidade" class="align-middle text-nowrap">!IT.NECESSI!</td>
+                                    <td data-label="Marca Produto" class="align-middle ">
+                                        <input class="form-control ipt-number" type="text" size="12" name="IT.MARCAPRD" value="%IT.MARCAPRD%" ID="IT.MARCAPRD" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                    <td data-label="Observa&#231;&#245;es" class="align-middle ">
+                                        <input class="form-control ipt-obs" type="text" size="12" name="IT.OBS" value="%IT.OBS%" ID="IT.OBS" onkeypress="return EnviaFormulario(event);" readonly>
+                                    </td>
+                                    <td data-label="Observa&#231;&#245;es Fornecedor" class="align-middle ">
+                                        <input class="form-control ipt-obs" type="text" size="12" name="IT.OBSCOFOR" value="%IT.OBSCOFOR%" ID="IT.OBSCOFOR" onkeypress="return EnviaFormulario(event);">
+                                    </td>
+                                </tr>
+								</tbody>
+                            </table>
+							</div>
+							</div>
+							
+                            <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card-group">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">Local de Entrega</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">!WFENDENTR!</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">Local de Cobrança</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">!WFENDCOB!</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left font-weight-bolder">Sub Total</p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="SUBTOT" onchange="RecalcVlrs();" ID="SUBTOT" value="0,00" onkeypress="return EnviaFormulario(event);" readonly>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left font-weight-bolder">Descontos</p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="VALDESC" onchange="RecalcVlrs();" ID="VALDESC" value="0,00" onkeypress="return EnviaFormulario(event);" readonly>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left font-weight-bolder">ICMS ST</p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="TOTICMST" ID="TOTICMST" value="0,00" onkeypress="return EnviaFormulario(event);" readonly>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left font-weight-bolder">IPI</p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="TOTIPI" ID="TOTIPI" value="0,00" onkeypress="return EnviaFormulario(event);" readonly>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-2 text-nowrap ">
+                                                        <p class="text-left font-weight-bolder">Frete</p>
+                                                    </div>
+                                                    <div class="col-lg-4 ">
+                                                        <p class="text-left ">
+                                                            <select class="form-control" name="FRETE" id="FRETE" onchange="CalcFrete(this);">
+                                                                <option selected>%FRETE%</option>
+                                                            </select>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="VALFRETE" ID="VALFRETE" value="%VALFRETE%" onchange="RecalcVlrs();" onkeypress="return EnviaFormulario(event);" >
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left font-weight-bolder">Total Pedido</p>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <input class="form-control text-right w-100" type="text" size="12" name="TOTPED" ID="TOTPED" value="0,00" onkeypress="return EnviaFormulario(event);" readonly>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">Condição Pagamento</p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">
+                                                            <select class="form-control" name="CONDPAG" id="CONDPAG">
+                                                                <option selected>%CONDPAG%</option>
+                                                            </select>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder ">Condição de Reajuste</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <p class="text-left  font-weight-bolder "></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mt-4 mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-around">
+                                <div class="form-group">
+                                    <input class="btn btn-success btn-lg" type="submit" value="ENVIAR">
+                                </div>
+                                <div class="form-group">
+                                    <input class="btn btn-secondary btn-lg" type="reset" value="LIMPAR">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type=hidden value="%WCHAVE%" />
+    </FORM>
+</body>
+
+</html>
